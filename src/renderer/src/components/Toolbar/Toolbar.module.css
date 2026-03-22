@@ -1,0 +1,66 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px;
+  height: 100%;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg);
+  user-select: none;
+}
+
+.appTitle {
+  font-size: 13px;
+  letter-spacing: 1px;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.actions {
+  display: flex;
+  gap: 6px;
+}
+
+.viewToggle {
+  display: flex;
+  gap: 6px;
+  border-left: 1px solid var(--color-border);
+  padding-left: 10px;
+}
+
+.exportWrap {
+  border-left: 1px solid var(--color-border);
+  padding-left: 10px;
+  position: relative;
+}
+
+.colorToggle {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  border-left: 1px solid var(--color-border);
+  padding-left: 10px;
+}
+
+.phosphorDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  opacity: 0.4;
+  transition: opacity 0.15s, border-color 0.15s;
+}
+
+.phosphorDot:hover {
+  opacity: 0.8;
+}
+
+.phosphorDot[data-active="true"] {
+  opacity: 1;
+  border-color: #fff;
+  box-shadow: 0 0 6px currentColor;
+}

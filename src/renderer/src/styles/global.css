@@ -1,0 +1,106 @@
+:root {
+  --color-phosphor: #33ff33;
+  --color-phosphor-dim: #1a8a1a;
+  --color-phosphor-bright: #66ff66;
+  --color-phosphor-glow: rgba(51, 255, 51, 0.15);
+  --color-bg: #000000;
+  --color-bg-raised: #050505;
+  --color-border: #1a8a1a;
+  --color-active-bg: rgba(51, 255, 51, 0.12);
+  --font-mono: 'Consolas', 'Courier New', monospace;
+  --font-size-base: 13px;
+}
+
+/* Amber phosphor theme */
+[data-theme="amber"] {
+  --color-phosphor: #ffb300;
+  --color-phosphor-dim: #996b00;
+  --color-phosphor-bright: #ffd54f;
+  --color-phosphor-glow: rgba(255, 179, 0, 0.15);
+  --color-border: #996b00;
+  --color-active-bg: rgba(255, 179, 0, 0.12);
+}
+
+/* Blue phosphor theme */
+[data-theme="blue"] {
+  --color-phosphor: #00d4ff;
+  --color-phosphor-dim: #007a99;
+  --color-phosphor-bright: #66e5ff;
+  --color-phosphor-glow: rgba(0, 212, 255, 0.15);
+  --color-border: #007a99;
+  --color-active-bg: rgba(0, 212, 255, 0.12);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-phosphor);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-base);
+  line-height: 1.4;
+}
+
+/* Phosphor glow on headings/title */
+.glow {
+  text-shadow:
+    0 0 4px var(--color-phosphor),
+    0 0 10px var(--color-phosphor-glow);
+}
+
+/* DOS-style [BUTTON] */
+.dos-btn {
+  background: transparent;
+  color: var(--color-phosphor);
+  border: none;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  padding: 2px 0;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+}
+.dos-btn::before { content: '['; margin-right: 1px; }
+.dos-btn::after  { content: ']'; margin-left: 1px; }
+.dos-btn:hover,
+.dos-btn:focus {
+  background: var(--color-phosphor);
+  color: var(--color-bg);
+  outline: none;
+}
+.dos-btn:disabled {
+  color: var(--color-phosphor-dim);
+  cursor: not-allowed;
+}
+.dos-btn:disabled:hover {
+  background: transparent;
+  color: var(--color-phosphor-dim);
+}
+
+/* Toggle button — active state */
+.dos-btn.active {
+  background: var(--color-phosphor);
+  color: var(--color-bg);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--color-bg); }
+::-webkit-scrollbar-thumb { background: var(--color-phosphor-dim); }
+::-webkit-scrollbar-thumb:hover { background: var(--color-phosphor); }
+
+/* Selection */
+::selection {
+  background: rgba(51, 255, 51, 0.25);
+  color: var(--color-phosphor-bright);
+}

@@ -1,0 +1,43 @@
+.app {
+  display: grid;
+  grid-template-rows: 36px 1fr;
+  height: 100vh;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-phosphor);
+}
+
+.toolbar {
+  /* row 1 */
+}
+
+.content {
+  display: flex;
+  overflow: hidden;
+}
+
+.navigator {
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.divider {
+  width: 5px;
+  flex-shrink: 0;
+  cursor: col-resize;
+  background: var(--color-border);
+  opacity: 0.4;
+  transition: opacity 0.15s;
+}
+
+.divider:hover,
+.divider:active {
+  opacity: 1;
+  background: var(--color-phosphor);
+}
+
+.main {
+  flex: 1;
+  overflow: hidden;
+  min-width: 0;
+}
