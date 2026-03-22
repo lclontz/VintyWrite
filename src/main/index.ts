@@ -17,7 +17,7 @@ async function createWindow(): Promise<void> {
       contextIsolation: true,
       nodeIntegration: false
     },
-    title: 'WRITELY'
+    title: 'VintyWrite'
   })
 
   // Restore zoom level once the page has loaded

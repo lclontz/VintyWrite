@@ -66,8 +66,8 @@ export function buildAndSetMenu(win: BrowserWindow, recents: RecentProject[]): v
       label: 'Help',
       submenu: [
         {
-          label: 'Learn More',
-          click: () => shell.openExternal('https://github.com')
+          label: 'Bug Reports / Feature Requests',
+          click: () => shell.openExternal('https://github.com/lclontz/VintyWrite/issues')
         }
       ]
     }
