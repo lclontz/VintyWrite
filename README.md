@@ -16,4 +16,4 @@ Features are:
 8. Drag-and-drop chapter reordering
 9. Three old-school color schemes: classic green, business amber, bold blue
 
-Documents are called "books" and subsections are called "chapters," but you don't have to use it that way. Use it however you like and let me know if you have any feedback at clontz@gmail.com!
+Documents are called "books," each of which maps to a directory, and subsections are called "chapters," each of which maps to a Markdown file, with a manifest file inside that the application uses to keep everythiing aligned. You don't have to use it just for books -- use it however you like and let me know if you have any feedback at clontz@gmail.com!
