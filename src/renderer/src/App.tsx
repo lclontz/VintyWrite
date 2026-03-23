@@ -3,6 +3,7 @@ import { Toolbar } from './components/Toolbar/Toolbar'
 import { FileNavigator } from './components/FileNavigator/FileNavigator'
 import { Editor } from './components/Editor/Editor'
 import { BookView } from './components/BookView/BookView'
+import { StatusBar } from './components/StatusBar/StatusBar'
 import { useStore } from './store/useStore'
 import { useProject } from './hooks/useProject'
 import { useEditorSync } from './hooks/useEditorSync'
@@ -15,7 +16,9 @@ const MAX_NAV_WIDTH = 480
 export default function App(): React.ReactElement {
   const viewMode = useStore((s) => s.viewMode)
   const phosphorColor = useStore((s) => s.phosphorColor)
-  const { newProject, openProject, openProjectByPath, saveProject } = useProject()
+  const isFocusMode = useStore((s) => s.isFocusMode)
+  const toggleFocusMode = useStore((s) => s.toggleFocusMode)
+  const { newProject, openProject, openProjectByPath, saveProject, selectFile } = useProject()
   const [navWidth, setNavWidth] = useState(200)
   const dragging = useRef(false)
   const startX = useRef(0)
@@ -23,12 +26,27 @@ export default function App(): React.ReactElement {
 
   useEditorSync()
 
+  // Restore last session on startup
+  useEffect(() => {
+    const lastDir = localStorage.getItem('lastProjectDir')
+    const lastFileId = localStorage.getItem('lastActiveFileId')
+    if (!lastDir) return
+    openProjectByPath(lastDir).then(() => {
+      if (lastFileId) {
+        const { manifest } = useStore.getState()
+        const entry = manifest?.files.find((f) => f.id === lastFileId)
+        if (entry) selectFile(lastFileId)
+      }
+    })
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     const offNew = window.api.onMenuNewProject(newProject)
     const offOpen = window.api.onMenuOpen(openProject)
     const offSave = window.api.onMenuSave(saveProject)
     const offRecent = window.api.onMenuOpenRecent(openProjectByPath)
-    return () => { offNew(); offOpen(); offSave(); offRecent() }
+    const offFocus = window.api.onMenuToggleFocus(toggleFocusMode)
+    return () => { offNew(); offOpen(); offSave(); offRecent(); offFocus() }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── OneDrive / external sync watchers ───────────────────────────────────
@@ -87,19 +105,26 @@ export default function App(): React.ReactElement {
   }, [])
 
   return (
-    <div className={styles.app} data-theme={phosphorColor}>
+    <div className={`${styles.app}${isFocusMode ? ` ${styles.focusMode}` : ''}`} data-theme={phosphorColor}>
       <Dialog />
       <div className={styles.toolbar}>
         <Toolbar />
       </div>
       <div className={styles.content}>
-        <div className={styles.navigator} style={{ width: navWidth }}>
-          <FileNavigator />
-        </div>
-        <div className={styles.divider} onMouseDown={onDividerMouseDown} />
+        {!isFocusMode && (
+          <>
+            <div className={styles.navigator} style={{ width: navWidth }}>
+              <FileNavigator />
+            </div>
+            <div className={styles.divider} onMouseDown={onDividerMouseDown} />
+          </>
+        )}
         <div className={styles.main}>
           {viewMode === 'editor' ? <Editor /> : <BookView />}
         </div>
+      </div>
+      <div className={styles.statusBar}>
+        <StatusBar />
       </div>
     </div>
   )

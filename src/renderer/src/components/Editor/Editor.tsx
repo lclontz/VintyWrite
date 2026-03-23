@@ -1,7 +1,8 @@
-import React, { useMemo, useState, useCallback } from 'react'
+import React, { useMemo, useState, useCallback, useEffect } from 'react'
 import CodeMirror from '@uiw/react-codemirror'
 import { markdown } from '@codemirror/lang-markdown'
 import { EditorView } from '@codemirror/view'
+import { search, openSearchPanel } from '@codemirror/search'
 import { useStore } from '../../store/useStore'
 import { FormatBar } from './FormatBar'
 import { ContextMenu } from './ContextMenu'
@@ -92,6 +93,15 @@ export function Editor(): React.ReactElement {
 
   const [ctxMenu, setCtxMenu] = useState<{ x: number; y: number; word: string } | null>(null)
 
+  // Open search panel from menu
+  useEffect(() => {
+    const off = window.api.onMenuFind(() => {
+      const view = editorViewRef.current
+      if (view) openSearchPanel(view)
+    })
+    return off
+  }, [])
+
   const handleContextMenu = useCallback((e: React.MouseEvent) => {
     e.preventDefault()
     const view = editorViewRef.current
@@ -176,7 +186,7 @@ export function Editor(): React.ReactElement {
           value={content}
           height="100%"
           theme="none"
-          extensions={[markdown(), theme, EditorView.lineWrapping]}
+          extensions={[markdown(), theme, EditorView.lineWrapping, search({ top: false })]}
           onCreateEditor={(view) => { editorViewRef.current = view }}
           onChange={(value) => {
             if (activeFileId) setFileContent(activeFileId, value)

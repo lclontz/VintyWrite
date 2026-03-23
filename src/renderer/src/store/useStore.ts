@@ -9,6 +9,9 @@ interface AppState {
   isDirty: boolean
   viewMode: 'editor' | 'book'
   phosphorColor: 'green' | 'amber' | 'blue'
+  isFocusMode: boolean
+  sessionStartTime: number
+  sessionWordsAtStart: number | null
 
   setProject: (projectDir: string, manifest: ProjectManifest) => void
   setActiveFile: (id: string) => void
@@ -21,6 +24,8 @@ interface AppState {
   setPhosphorColor: (color: 'green' | 'amber' | 'blue') => void
   markSaved: () => void
   closeProject: () => void
+  toggleFocusMode: () => void
+  setSessionWordsAtStart: (n: number) => void
 }
 
 export const useStore = create<AppState>((set) => ({
@@ -31,12 +36,20 @@ export const useStore = create<AppState>((set) => ({
   isDirty: false,
   viewMode: 'editor',
   phosphorColor: (localStorage.getItem('phosphorColor') as 'green' | 'amber' | 'blue') ?? 'green',
+  isFocusMode: false,
+  sessionStartTime: Date.now(),
+  sessionWordsAtStart: null,
 
-  setProject: (projectDir, manifest) =>
-    set({ projectDir, manifest, activeFileId: null, fileContents: {}, isDirty: false }),
+  setProject: (projectDir, manifest) => {
+    localStorage.setItem('lastProjectDir', projectDir)
+    localStorage.removeItem('lastActiveFileId')
+    set({ projectDir, manifest, activeFileId: null, fileContents: {}, isDirty: false, sessionWordsAtStart: null })
+  },
 
-  setActiveFile: (id) =>
-    set({ activeFileId: id }),
+  setActiveFile: (id) => {
+    localStorage.setItem('lastActiveFileId', id)
+    set({ activeFileId: id })
+  },
 
   setFileContent: (id, content) =>
     set((state) => ({
@@ -78,6 +91,13 @@ export const useStore = create<AppState>((set) => ({
 
   markSaved: () => set({ isDirty: false }),
 
-  closeProject: () =>
+  closeProject: () => {
+    localStorage.removeItem('lastProjectDir')
+    localStorage.removeItem('lastActiveFileId')
     set({ projectDir: null, manifest: null, activeFileId: null, fileContents: {}, isDirty: false })
+  },
+
+  toggleFocusMode: () => set((state) => ({ isFocusMode: !state.isFocusMode })),
+
+  setSessionWordsAtStart: (n) => set({ sessionWordsAtStart: n })
 }))

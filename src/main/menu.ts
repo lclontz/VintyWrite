@@ -48,7 +48,13 @@ export function buildAndSetMenu(win: BrowserWindow, recents: RecentProject[]): v
         { role: 'cut' },
         { role: 'copy' },
         { role: 'paste' },
-        { role: 'selectAll' }
+        { role: 'selectAll' },
+        { type: 'separator' },
+        {
+          label: 'Find / Replace',
+          accelerator: 'CmdOrCtrl+F',
+          click: () => win.webContents.send('menu:find')
+        }
       ]
     },
     {
@@ -59,7 +65,13 @@ export function buildAndSetMenu(win: BrowserWindow, recents: RecentProject[]): v
         { type: 'separator' },
         { role: 'resetZoom' },
         { role: 'zoomIn' },
-        { role: 'zoomOut' }
+        { role: 'zoomOut' },
+        { type: 'separator' },
+        {
+          label: 'Focus Mode',
+          accelerator: 'F11',
+          click: () => win.webContents.send('menu:toggle-focus')
+        }
       ]
     },
     {

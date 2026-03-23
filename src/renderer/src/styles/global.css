@@ -104,3 +104,69 @@ body {
   background: rgba(51, 255, 51, 0.25);
   color: var(--color-phosphor-bright);
 }
+
+/* CodeMirror search panel */
+.cm-search {
+  background: var(--color-bg-raised) !important;
+  border-top: 1px solid var(--color-border) !important;
+  padding: 4px 8px !important;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.cm-search input {
+  background: var(--color-bg) !important;
+  color: var(--color-phosphor) !important;
+  border: 1px solid var(--color-border) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 11px !important;
+  padding: 2px 6px !important;
+  outline: none !important;
+}
+
+.cm-search input:focus {
+  border-color: var(--color-phosphor) !important;
+}
+
+.cm-search button {
+  background: transparent !important;
+  color: var(--color-phosphor) !important;
+  border: 1px solid var(--color-border) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 11px !important;
+  padding: 1px 6px !important;
+  cursor: pointer !important;
+}
+
+.cm-search button:hover {
+  background: var(--color-phosphor) !important;
+  color: var(--color-bg) !important;
+}
+
+.cm-search label {
+  color: var(--color-phosphor-dim) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 11px !important;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.cm-search label input[type="checkbox"] {
+  accent-color: var(--color-phosphor);
+  border: none !important;
+  width: auto !important;
+  padding: 0 !important;
+}
+
+.cm-searchMatch {
+  background: rgba(51, 255, 51, 0.2) !important;
+  outline: 1px solid var(--color-phosphor-dim) !important;
+}
+
+.cm-searchMatch-selected {
+  background: rgba(51, 255, 51, 0.4) !important;
+  outline: 1px solid var(--color-phosphor) !important;
+}

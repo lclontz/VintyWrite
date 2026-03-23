@@ -11,6 +11,8 @@ export function Toolbar(): React.ReactElement {
   const setViewMode = useStore((s) => s.setViewMode)
   const phosphorColor = useStore((s) => s.phosphorColor)
   const setPhosphorColor = useStore((s) => s.setPhosphorColor)
+  const isFocusMode = useStore((s) => s.isFocusMode)
+  const toggleFocusMode = useStore((s) => s.toggleFocusMode)
   const { newProject, openProject, saveProject } = useProject()
 
   const title = manifest?.title ?? 'VINTYWRITE v1.0'
@@ -48,6 +50,16 @@ export function Toolbar(): React.ReactElement {
 
       <div className={styles.exportWrap}>
         <ExportMenu />
+      </div>
+
+      <div className={styles.focusToggle}>
+        <button
+          className={`dos-btn${isFocusMode ? ' active' : ''}`}
+          onClick={toggleFocusMode}
+          title="Toggle focus mode (F11)"
+        >
+          {isFocusMode ? 'EXIT FOCUS' : 'FOCUS'}
+        </button>
       </div>
 
       <div className={styles.colorToggle}>

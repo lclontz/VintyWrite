@@ -23,6 +23,8 @@ declare global {
       onMenuOpen: (cb: () => void) => () => void
       onMenuSave: (cb: () => void) => () => void
       onMenuOpenRecent: (cb: (projectDir: string) => void) => () => void
+      onMenuToggleFocus: (cb: () => void) => () => void
+      onMenuFind: (cb: () => void) => () => void
       openExternal: (url: string) => Promise<void>
       onWatchManifestChanged: (cb: () => void) => () => void
       onWatchFileChanged: (cb: (filename: string) => void) => () => void

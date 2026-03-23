@@ -42,6 +42,15 @@ contextBridge.exposeInMainWorld('api', {
     return () => ipcRenderer.removeListener('menu:open-recent', handler)
   },
 
+  onMenuToggleFocus: (cb: () => void) => {
+    ipcRenderer.on('menu:toggle-focus', cb)
+    return () => ipcRenderer.removeListener('menu:toggle-focus', cb)
+  },
+  onMenuFind: (cb: () => void) => {
+    ipcRenderer.on('menu:find', cb)
+    return () => ipcRenderer.removeListener('menu:find', cb)
+  },
+
   openExternal: (url: string) => ipcRenderer.invoke('shell:open-external', { url }),
 
   exportBook: (format: 'pdf' | 'docx', manifest: unknown, fileContents: Record<string, string>) =>
