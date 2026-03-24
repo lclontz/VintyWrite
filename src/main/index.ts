@@ -4,6 +4,7 @@ import { registerIpcHandlers } from './ipc-handlers'
 import { buildAndSetMenu } from './menu'
 import { loadRecents } from './recents'
 import { loadPrefs, savePrefs } from './prefs'
+import { initAutoUpdater } from './updater'
 
 async function createWindow(): Promise<void> {
   const [recents, prefs] = await Promise.all([loadRecents(), loadPrefs()])
@@ -34,6 +35,7 @@ async function createWindow(): Promise<void> {
   registerIpcHandlers(win)
 
   buildAndSetMenu(win, recents)
+  initAutoUpdater(win)
 
   if (process.env['ELECTRON_RENDERER_URL']) {
     win.loadURL(process.env['ELECTRON_RENDERER_URL'])
