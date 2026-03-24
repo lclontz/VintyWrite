@@ -3,8 +3,10 @@ import CodeMirror from '@uiw/react-codemirror'
 import { markdown } from '@codemirror/lang-markdown'
 import { EditorView } from '@codemirror/view'
 import { search, openSearchPanel } from '@codemirror/search'
+import { keymap } from '@codemirror/view'
+import { Prec } from '@codemirror/state'
 import { useStore } from '../../store/useStore'
-import { FormatBar } from './FormatBar'
+import { FormatBar, wrapSelection } from './FormatBar'
 import { ContextMenu } from './ContextMenu'
 import { editorViewRef } from './editorViewRef'
 import styles from './Editor.module.css'
@@ -42,6 +44,11 @@ const COLORS = {
   }
 }
 
+const formatKeymap = Prec.high(keymap.of([
+  { key: 'Ctrl-b', run: (view) => { wrapSelection(view, '**', '**', 'bold'); return true } },
+  { key: 'Ctrl-i', run: (view) => { wrapSelection(view, '*', '*', 'italic'); return true } },
+]))
+
 function makeTheme(color: 'green' | 'amber' | 'blue') {
   const c = COLORS[color]
   return EditorView.theme(
@@ -54,6 +61,7 @@ function makeTheme(color: 'green' | 'amber' | 'blue') {
         height: '100%'
       },
       '.cm-content': { caretColor: c.main, padding: '12px 16px' },
+      '.cm-line': { marginBottom: '0.4em' },
       '.cm-cursor, .cm-dropCursor': { borderLeftColor: c.main },
       '.cm-activeLine': { backgroundColor: c.activeLine },
       '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, ::selection': {
@@ -186,7 +194,7 @@ export function Editor(): React.ReactElement {
           value={content}
           height="100%"
           theme="none"
-          extensions={[markdown(), theme, EditorView.lineWrapping, search({ top: false })]}
+          extensions={[markdown(), theme, EditorView.lineWrapping, search({ top: false }), formatKeymap]}
           onCreateEditor={(view) => { editorViewRef.current = view }}
           onChange={(value) => {
             if (activeFileId) setFileContent(activeFileId, value)

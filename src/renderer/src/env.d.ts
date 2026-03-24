@@ -20,6 +20,7 @@ declare global {
       createFile: (projectDir: string, filename: string) => Promise<{ success: boolean; error?: string }>
       deleteFile: (projectDir: string, filename: string) => Promise<{ success: boolean; error?: string }>
       onMenuNewProject: (cb: () => void) => () => void
+      onMenuNewChapter: (cb: () => void) => () => void
       onMenuOpen: (cb: () => void) => () => void
       onMenuSave: (cb: () => void) => () => void
       onMenuOpenRecent: (cb: (projectDir: string) => void) => () => void

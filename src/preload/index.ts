@@ -42,6 +42,10 @@ contextBridge.exposeInMainWorld('api', {
     return () => ipcRenderer.removeListener('menu:open-recent', handler)
   },
 
+  onMenuNewChapter: (cb: () => void) => {
+    ipcRenderer.on('menu:new-chapter', cb)
+    return () => ipcRenderer.removeListener('menu:new-chapter', cb)
+  },
   onMenuToggleFocus: (cb: () => void) => {
     ipcRenderer.on('menu:toggle-focus', cb)
     return () => ipcRenderer.removeListener('menu:toggle-focus', cb)

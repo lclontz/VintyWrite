@@ -21,6 +21,11 @@ export function buildAndSetMenu(win: BrowserWindow, recents: RecentProject[]): v
           click: () => win.webContents.send('menu:new-project')
         },
         {
+          label: 'New Chapter',
+          accelerator: 'CmdOrCtrl+M',
+          click: () => win.webContents.send('menu:new-chapter')
+        },
+        {
           label: 'Open Project',
           accelerator: 'CmdOrCtrl+O',
           click: () => win.webContents.send('menu:open-project')

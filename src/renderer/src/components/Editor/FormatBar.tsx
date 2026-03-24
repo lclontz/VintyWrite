@@ -4,7 +4,7 @@ import type { EditorView } from '@codemirror/view'
 import { editorViewRef } from './editorViewRef'
 import styles from './FormatBar.module.css'
 
-function wrapSelection(view: EditorView, before: string, after: string, placeholder = 'text') {
+export function wrapSelection(view: EditorView, before: string, after: string, placeholder = 'text') {
   const { state } = view
   const changes = state.changeByRange((range) => {
     if (range.empty) {

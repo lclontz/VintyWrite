@@ -18,7 +18,7 @@ export default function App(): React.ReactElement {
   const phosphorColor = useStore((s) => s.phosphorColor)
   const isFocusMode = useStore((s) => s.isFocusMode)
   const toggleFocusMode = useStore((s) => s.toggleFocusMode)
-  const { newProject, openProject, openProjectByPath, saveProject, selectFile } = useProject()
+  const { newProject, openProject, openProjectByPath, saveProject, selectFile, addFile } = useProject()
   const [navWidth, setNavWidth] = useState(200)
   const dragging = useRef(false)
   const startX = useRef(0)
@@ -42,11 +42,12 @@ export default function App(): React.ReactElement {
 
   useEffect(() => {
     const offNew = window.api.onMenuNewProject(newProject)
+    const offChapter = window.api.onMenuNewChapter(addFile)
     const offOpen = window.api.onMenuOpen(openProject)
     const offSave = window.api.onMenuSave(saveProject)
     const offRecent = window.api.onMenuOpenRecent(openProjectByPath)
     const offFocus = window.api.onMenuToggleFocus(toggleFocusMode)
-    return () => { offNew(); offOpen(); offSave(); offRecent(); offFocus() }
+    return () => { offNew(); offChapter(); offOpen(); offSave(); offRecent(); offFocus() }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── OneDrive / external sync watchers ───────────────────────────────────
