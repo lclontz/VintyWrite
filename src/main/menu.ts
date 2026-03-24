@@ -31,7 +31,7 @@ export function buildAndSetMenu(win: BrowserWindow, recents: RecentProject[]): v
           click: () => win.webContents.send('menu:open-project')
         },
         {
-          label: 'Recent Books',
+          label: 'Recent Projects',
           submenu: recentSubmenu
         },
         { type: 'separator' },
