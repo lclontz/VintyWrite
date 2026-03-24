@@ -27,7 +27,7 @@ async function uniqueFilename(projectDir: string, base: string): Promise<string>
 
 export function useProject() {
   const store = useStore()
-  const { showPrompt, showConfirm } = useDialogStore()
+  const { showPrompt, showConfirm, showAlert } = useDialogStore()
 
   async function newProject() {
     const title = await showPrompt('Project title:', 'My Book')
@@ -35,7 +35,7 @@ export function useProject() {
 
     const result = await window.api.newProject(title.trim())
     if (!result || 'error' in result) {
-      if (result && 'error' in result) await showPrompt(`Error: ${result.error}`)
+      if (result && 'error' in result) await showAlert(result.error)
       return
     }
     store.setProject(result.projectDir, result.manifest)

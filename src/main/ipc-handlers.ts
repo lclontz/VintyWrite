@@ -37,6 +37,8 @@ export function registerIpcHandlers(win: BrowserWindow): void {
       if (result.canceled || !result.filePaths[0]) return null
 
       const projectDir = result.filePaths[0]
+      const alreadyExists = await fileSystem.fileExists(projectDir, 'project.json')
+      if (alreadyExists) return { error: 'Syntax error: Each project should be in its own folder!' }
       const manifest: fileSystem.ProjectManifest = { title, files: [] }
       recordSelfWrite('project.json')
       await fileSystem.writeManifest(projectDir, manifest)
