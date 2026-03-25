@@ -1,4 +1,4 @@
-import { Menu, BrowserWindow, shell } from 'electron'
+import { Menu, BrowserWindow, shell, dialog, app } from 'electron'
 import type { RecentProject } from './recents'
 
 export function buildAndSetMenu(win: BrowserWindow, recents: RecentProject[]): void {
@@ -82,6 +82,22 @@ export function buildAndSetMenu(win: BrowserWindow, recents: RecentProject[]): v
     {
       label: 'Help',
       submenu: [
+        {
+          label: 'About VintyWrite',
+          click: async () => {
+            const { response } = await dialog.showMessageBox(win, {
+              type: 'info',
+              title: 'About VintyWrite',
+              message: 'VintyWrite',
+              detail: `Version ${app.getVersion()}\n\nCopyright 2026, Lee Clontz\n\ngithub.com/lclontz/VintyWrite\nclontz.blog`,
+              buttons: ['OK', 'GitHub Repository', 'clontz.blog'],
+              defaultId: 0
+            })
+            if (response === 1) shell.openExternal('https://github.com/lclontz/VintyWrite')
+            if (response === 2) shell.openExternal('https://clontz.blog')
+          }
+        },
+        { type: 'separator' },
         {
           label: 'Bug Reports / Feature Requests',
           click: () => shell.openExternal('https://github.com/lclontz/VintyWrite/issues')
