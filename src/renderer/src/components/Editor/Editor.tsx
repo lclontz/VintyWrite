@@ -3,6 +3,8 @@ import CodeMirror from '@uiw/react-codemirror'
 import { markdown } from '@codemirror/lang-markdown'
 import { EditorView } from '@codemirror/view'
 import { search, openSearchPanel } from '@codemirror/search'
+import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
+import { tags } from '@lezer/highlight'
 import { keymap } from '@codemirror/view'
 import { Prec } from '@codemirror/state'
 import { useStore } from '../../store/useStore'
@@ -51,7 +53,8 @@ const formatKeymap = Prec.high(keymap.of([
 
 function makeTheme(color: 'green' | 'amber' | 'blue') {
   const c = COLORS[color]
-  return EditorView.theme(
+
+  const baseTheme = EditorView.theme(
     {
       '&': {
         backgroundColor: '#000000',
@@ -79,15 +82,32 @@ function makeTheme(color: 'green' | 'amber' | 'blue') {
       },
       '.cm-scroller': { overflow: 'auto', fontFamily: "'Consolas', 'Courier New', monospace" },
       '.cm-focused': { outline: 'none' },
-      '.tok-heading':   { color: c.bright, fontWeight: 'bold' },
-      '.tok-strong':    { color: c.bright, fontWeight: 'bold' },
-      '.tok-emphasis':  { color: c.mid, fontStyle: 'italic' },
-      '.tok-link':      { color: c.faint },
-      '.tok-monospace': { color: c.veryFaint },
-      '.tok-comment':   { color: c.dim }
     },
     { dark: true }
   )
+
+  const highlightStyle = syntaxHighlighting(HighlightStyle.define([
+    { tag: tags.heading,              color: c.bright, fontWeight: 'bold' },
+    { tag: tags.strong,               color: c.bright, fontWeight: 'bold' },
+    { tag: tags.emphasis,             color: c.mid,    fontStyle: 'italic' },
+    { tag: tags.strikethrough,        color: c.dim,    textDecoration: 'line-through' },
+    { tag: tags.link,                 color: c.faint },
+    { tag: tags.url,                  color: c.faint },
+    { tag: tags.monospace,            color: c.veryFaint },
+    { tag: tags.comment,              color: c.dim },
+    // Formatting markers: #, *, **, -, >, ``
+    { tag: tags.processingInstruction, color: c.dim },
+    { tag: tags.punctuation,          color: c.dim },
+    { tag: tags.meta,                 color: c.dim },
+    { tag: tags.list,                 color: c.dim },
+    { tag: tags.contentSeparator,     color: c.dim },
+    { tag: tags.labelName,            color: c.faint },
+    // Everything else stays phosphor main
+    { tag: tags.content,              color: c.main },
+    { tag: tags.atom,                 color: c.main },
+  ]))
+
+  return [baseTheme, highlightStyle]
 }
 
 export function Editor(): React.ReactElement {
@@ -208,7 +228,7 @@ export function Editor(): React.ReactElement {
             dropCursor: true,
             allowMultipleSelections: true,
             indentOnInput: true,
-            syntaxHighlighting: true,
+            syntaxHighlighting: false,
             bracketMatching: true,
             closeBrackets: false,
             autocompletion: false,
