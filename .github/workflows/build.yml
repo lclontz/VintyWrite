@@ -19,11 +19,7 @@ jobs:
         with:
           node-version: '18'
       - run: npm install
-      - run: npm run dist:win
-      - uses: actions/upload-artifact@v4
-        with:
-          name: windows-installer
-          path: dist/*.exe
+      - run: npm run dist:win -- --publish always
 
   build-macos:
     runs-on: macos-latest
@@ -35,11 +31,7 @@ jobs:
         with:
           node-version: '18'
       - run: npm install
-      - run: npm run dist:mac
-      - uses: actions/upload-artifact@v4
-        with:
-          name: macos-dmg
-          path: dist/*.dmg
+      - run: npm run dist:mac -- --publish always
 
   build-linux:
     runs-on: ubuntu-latest
@@ -51,23 +43,4 @@ jobs:
         with:
           node-version: '18'
       - run: npm install
-      - run: npm run dist:linux
-      - uses: actions/upload-artifact@v4
-        with:
-          name: linux-appimage
-          path: dist/*.AppImage
-
-  release:
-    needs: [build-windows, build-macos, build-linux]
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
-    steps:
-      - uses: actions/download-artifact@v4
-      - uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            windows-installer/*
-            macos-dmg/*
-            linux-appimage/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: npm run dist:linux -- --publish always
