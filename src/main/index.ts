@@ -32,16 +32,6 @@ async function createWindow(): Promise<void> {
     await savePrefs({ zoomLevel: win.webContents.getZoomLevel() })
   })
 
-  // Forward spell-check suggestions to the renderer
-  win.webContents.on('context-menu', (_e, params) => {
-    if (params.misspelledWord) {
-      win.webContents.send('spell:suggestions', {
-        word: params.misspelledWord,
-        suggestions: params.spellingSuggestions ?? []
-      })
-    }
-  })
-
   // Register IPC handlers BEFORE loading content
   registerIpcHandlers(win)
 

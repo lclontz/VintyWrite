@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback, useEffect, useRef } from 'react'
+import React, { useMemo, useState, useCallback, useEffect } from 'react'
 import CodeMirror from '@uiw/react-codemirror'
 import { markdown } from '@codemirror/lang-markdown'
 import { EditorView } from '@codemirror/view'
@@ -119,7 +119,7 @@ export function Editor(): React.ReactElement {
   const theme = useMemo(() => makeTheme(phosphorColor), [phosphorColor])
 
   const [ctxMenu, setCtxMenu] = useState<{ x: number; y: number; word: string } | null>(null)
-  const spellRef = useRef<{ word: string; suggestions: string[] } | null>(null)
+  const [spellData, setSpellData] = useState<{ word: string; suggestions: string[] } | null>(null)
 
   // Open search panel from menu
   useEffect(() => {
@@ -130,19 +130,10 @@ export function Editor(): React.ReactElement {
     return off
   }, [])
 
-  // Collect spell-check suggestions from the main process
-  useEffect(() => {
-    const off = window.api.onSpellSuggestions((data) => { spellRef.current = data })
-    return off
-  }, [])
-
-  const handleContextMenu = useCallback((e: React.MouseEvent) => {
+  const handleContextMenu = useCallback(async (e: React.MouseEvent) => {
     e.preventDefault()
     const view = editorViewRef.current
     if (!view) return
-
-    const clientX = e.clientX
-    const clientY = e.clientY
 
     // Get selected text, or the word under the cursor
     const sel = view.state.sliceDoc(
@@ -151,27 +142,21 @@ export function Editor(): React.ReactElement {
     ).trim()
 
     let word = sel
-    let wordFrom = -1
-    let wordTo = -1
     if (!word) {
-      const pos = view.posAtCoords({ x: clientX, y: clientY })
+      const pos = view.posAtCoords({ x: e.clientX, y: e.clientY })
       if (pos != null) {
         const wordRange = view.state.wordAt(pos)
         if (wordRange) {
           word = view.state.sliceDoc(wordRange.from, wordRange.to)
-          wordFrom = wordRange.from
-          wordTo = wordRange.to
         }
       }
     }
 
     if (!word) return
 
-    const captured = { word, wordFrom, wordTo, clientX, clientY }
-    // Small delay to let the spell:suggestions IPC message arrive first
-    setTimeout(() => {
-      setCtxMenu({ x: captured.clientX, y: captured.clientY, word: captured.word })
-    }, 50)
+    const spell = await window.api.checkSpelling(word)
+    setSpellData(spell.misspelled && spell.suggestions.length > 0 ? { word, suggestions: spell.suggestions } : null)
+    setCtxMenu({ x: e.clientX, y: e.clientY, word })
   }, [])
 
   function lookupItems(word: string) {
@@ -179,8 +164,8 @@ export function Editor(): React.ReactElement {
     const view = editorViewRef.current
 
     const spellItems =
-      spellRef.current?.word === word && spellRef.current.suggestions.length > 0
-        ? spellRef.current.suggestions.map((s) => ({
+      spellData?.suggestions.length
+        ? spellData.suggestions.map((s) => ({
             label: s,
             action: () => {
               if (!view) return

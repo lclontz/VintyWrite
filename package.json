@@ -1,7 +1,7 @@
 {
   "name": "vintywrite",
   "author": "Lee Clontz",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "A DOS-style markdown writing app",
   "main": "./out/main/index.js",
   "scripts": {
@@ -27,7 +27,9 @@
     },
     "linux": {
       "icon": "resources/icon.png",
-      "target": ["AppImage"]
+      "target": [
+        "AppImage"
+      ]
     }
   },
   "dependencies": {
@@ -37,9 +39,11 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@uiw/react-codemirror": "^4.25.8",
+    "dictionary-en-us": "^2.2.1",
     "docx": "^7.8.2",
     "electron-updater": "^6.8.3",
     "marked": "^4.3.0",
+    "nspell": "^2.1.5",
     "react-markdown": "^9.0.0",
     "remark-gfm": "^4.0.1",
     "uuid": "^11.0.0",

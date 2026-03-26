@@ -55,11 +55,7 @@ contextBridge.exposeInMainWorld('api', {
     return () => ipcRenderer.removeListener('menu:find', cb)
   },
 
-  onSpellSuggestions: (cb: (data: { word: string; suggestions: string[] }) => void) => {
-    const handler = (_e: Electron.IpcRendererEvent, data: { word: string; suggestions: string[] }) => cb(data)
-    ipcRenderer.on('spell:suggestions', handler)
-    return () => ipcRenderer.removeListener('spell:suggestions', handler)
-  },
+  checkSpelling: (word: string) => ipcRenderer.invoke('spell:check', { word }),
 
   openExternal: (url: string) => ipcRenderer.invoke('shell:open-external', { url }),
 

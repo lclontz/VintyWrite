@@ -31,7 +31,7 @@ declare global {
       onMenuOpenRecent: (cb: (projectDir: string) => void) => () => void
       onMenuToggleFocus: (cb: () => void) => () => void
       onMenuFind: (cb: () => void) => () => void
-      onSpellSuggestions: (cb: (data: { word: string; suggestions: string[] }) => void) => () => void
+      checkSpelling: (word: string) => Promise<{ misspelled: boolean; suggestions: string[] }>
       openExternal: (url: string) => Promise<void>
       onWatchManifestChanged: (cb: () => void) => () => void
       onWatchFileChanged: (cb: (filename: string) => void) => () => void

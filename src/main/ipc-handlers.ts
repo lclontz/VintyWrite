@@ -6,6 +6,15 @@ import { addRecent, loadRecents } from './recents'
 import { buildAndSetMenu } from './menu'
 import { exportToPdf, exportToDocx, type ExportManifest } from './exporter'
 import { startWatching, recordSelfWrite } from './watcher'
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const nspell = require('nspell')
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const dict = require('dictionary-en-us')
+
+let spell: { correct: (w: string) => boolean; suggest: (w: string) => string[] } | null = null
+dict((err: Error, d: { aff: Buffer; dic: Buffer }) => {
+  if (!err) spell = nspell(d)
+})
 
 export function registerIpcHandlers(win: BrowserWindow): void {
   ipcMain.handle('recents:get', async () => {
@@ -146,6 +155,12 @@ export function registerIpcHandlers(win: BrowserWindow): void {
 
   ipcMain.handle('shell:open-external', async (_event, { url }: { url: string }) => {
     await shell.openExternal(url)
+  })
+
+  ipcMain.handle('spell:check', (_event, { word }: { word: string }) => {
+    if (!spell) return { misspelled: false, suggestions: [] }
+    const misspelled = !spell.correct(word)
+    return { misspelled, suggestions: misspelled ? spell.suggest(word).slice(0, 6) : [] }
   })
 
   ipcMain.handle(
