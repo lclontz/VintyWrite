@@ -16,7 +16,8 @@ async function createWindow(): Promise<void> {
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       contextIsolation: true,
-      nodeIntegration: false
+      nodeIntegration: false,
+      spellcheck: true
     },
     title: 'VintyWrite'
   })
@@ -29,6 +30,16 @@ async function createWindow(): Promise<void> {
   // Save zoom level when the window is about to close
   win.on('close', async () => {
     await savePrefs({ zoomLevel: win.webContents.getZoomLevel() })
+  })
+
+  // Forward spell-check suggestions to the renderer
+  win.webContents.on('context-menu', (_e, params) => {
+    if (params.misspelledWord) {
+      win.webContents.send('spell:suggestions', {
+        word: params.misspelledWord,
+        suggestions: params.spellingSuggestions ?? []
+      })
+    }
   })
 
   // Register IPC handlers BEFORE loading content

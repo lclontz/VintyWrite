@@ -1,5 +1,10 @@
 import type { ProjectManifest } from './types'
 
+declare module '*.module.css' {
+  const styles: Record<string, string>
+  export default styles
+}
+
 export interface RecentProject {
   projectDir: string
   title: string
@@ -26,6 +31,7 @@ declare global {
       onMenuOpenRecent: (cb: (projectDir: string) => void) => () => void
       onMenuToggleFocus: (cb: () => void) => () => void
       onMenuFind: (cb: () => void) => () => void
+      onSpellSuggestions: (cb: (data: { word: string; suggestions: string[] }) => void) => () => void
       openExternal: (url: string) => Promise<void>
       onWatchManifestChanged: (cb: () => void) => () => void
       onWatchFileChanged: (cb: (filename: string) => void) => () => void
