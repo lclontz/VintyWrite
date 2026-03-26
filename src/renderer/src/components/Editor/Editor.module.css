@@ -1,7 +1,8 @@
 .editor {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   background: #000;
 }
 
@@ -16,16 +17,9 @@
 
 .cmWrapper {
   flex: 1;
-  overflow: hidden;
-}
-
-/* Make CodeMirror fill the wrapper */
-.cmWrapper :global(.cm-editor) {
-  height: 100%;
-}
-
-.cmWrapper :global(.cm-scroller) {
-  overflow: auto;
+  min-height: 0;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 /* Placeholder / no-file state */

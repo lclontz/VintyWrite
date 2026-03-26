@@ -68,7 +68,7 @@ export function StatusBar(): React.ReactElement {
       </span>
       <span className={styles.sep}>│</span>
       <span className={styles.stat}>
-        <span className={styles.label}>BOOK:</span>
+        <span className={styles.label}>PROJECT:</span>
         <span className={styles.value}>{bookWords.toLocaleString()} wds</span>
       </span>
       <span className={styles.sep}>│</span>

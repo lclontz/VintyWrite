@@ -61,10 +61,9 @@ function makeTheme(color: 'green' | 'amber' | 'blue') {
         color: c.main,
         fontFamily: "'Consolas', 'Courier New', monospace",
         fontSize: '13px',
-        height: '100%'
       },
-      '.cm-content': { caretColor: c.main, padding: '12px 16px' },
-      '.cm-line': { marginBottom: '0.4em' },
+      '.cm-content': { caretColor: c.main, padding: '12px 16px', lineHeight: '1.8' },
+      '.cm-line': { marginBottom: '.8em' },
       '.cm-cursor, .cm-dropCursor': { borderLeftColor: c.main },
       '.cm-activeLine': { backgroundColor: c.activeLine },
       '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, ::selection': {
@@ -80,7 +79,7 @@ function makeTheme(color: 'green' | 'amber' | 'blue') {
         paddingLeft: '8px',
         paddingRight: '8px'
       },
-      '.cm-scroller': { overflow: 'auto', fontFamily: "'Consolas', 'Courier New', monospace" },
+      '.cm-scroller': { fontFamily: "'Consolas', 'Courier New', monospace", overflow: 'visible' },
       '.cm-focused': { outline: 'none' },
     },
     { dark: true }
@@ -212,7 +211,6 @@ export function Editor(): React.ReactElement {
         <CodeMirror
           key={activeFileId}
           value={content}
-          height="100%"
           theme="none"
           extensions={[markdown(), theme, EditorView.lineWrapping, search({ top: false }), formatKeymap]}
           onCreateEditor={(view) => { editorViewRef.current = view }}
@@ -220,7 +218,7 @@ export function Editor(): React.ReactElement {
             if (activeFileId) setFileContent(activeFileId, value)
           }}
           basicSetup={{
-            lineNumbers: true,
+            lineNumbers: false,
             highlightActiveLine: true,
             highlightSelectionMatches: true,
             history: true,
@@ -234,7 +232,7 @@ export function Editor(): React.ReactElement {
             autocompletion: false,
             rectangularSelection: false,
             crosshairCursor: false,
-            highlightActiveLineGutter: true,
+            highlightActiveLineGutter: false,
             searchKeymap: true
           }}
         />
