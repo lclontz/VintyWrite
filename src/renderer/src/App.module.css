@@ -11,6 +11,10 @@
   grid-template-rows: 0 1fr 26px;
 }
 
+.app.focusMode .toolbar {
+  overflow: hidden;
+}
+
 .toolbar {
   position: relative;
   z-index: 10;
