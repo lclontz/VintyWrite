@@ -61,9 +61,10 @@ function makeTheme(color: 'green' | 'amber' | 'blue') {
         color: c.main,
         fontFamily: "'Consolas', 'Courier New', monospace",
         fontSize: '13px',
+        height: '100%',
       },
       '.cm-content': { caretColor: c.main, padding: '12px 16px', lineHeight: '1.8' },
-      '.cm-line': { marginBottom: '.8em' },
+      '.cm-line': { paddingBottom: '.8em' },
       '.cm-cursor, .cm-dropCursor': { borderLeftColor: c.main },
       '.cm-activeLine': { backgroundColor: c.activeLine },
       '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, ::selection': {
@@ -79,7 +80,7 @@ function makeTheme(color: 'green' | 'amber' | 'blue') {
         paddingLeft: '8px',
         paddingRight: '8px'
       },
-      '.cm-scroller': { fontFamily: "'Consolas', 'Courier New', monospace", overflow: 'visible' },
+      '.cm-scroller': { fontFamily: "'Consolas', 'Courier New', monospace" },
       '.cm-focused': { outline: 'none' },
     },
     { dark: true }
@@ -232,6 +233,8 @@ export function Editor(): React.ReactElement {
       <div className={styles.cmWrapper} onContextMenu={handleContextMenu}>
         <CodeMirror
           key={activeFileId}
+          className={styles.cmInner}
+          height="100%"
           value={content}
           theme="none"
           extensions={[markdown(), theme, EditorView.lineWrapping, search({ top: false }), formatKeymap, EditorView.contentAttributes.of({ spellcheck: 'true' })]}

@@ -18,8 +18,11 @@
 .cmWrapper {
   flex: 1;
   min-height: 0;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  overflow: hidden;
+}
+
+.cmInner {
+  height: 100%;
 }
 
 /* Placeholder / no-file state */
