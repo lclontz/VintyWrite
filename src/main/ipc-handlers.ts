@@ -45,9 +45,11 @@ export function registerIpcHandlers(win: BrowserWindow): void {
       })
       if (result.canceled || !result.filePaths[0]) return null
 
-      const projectDir = result.filePaths[0]
+      const folderName = title.trim().replace(/[\\/:*?"<>|]/g, '').trim() || 'New Project'
+      const projectDir = path.join(result.filePaths[0], folderName)
       const alreadyExists = await fileSystem.fileExists(projectDir, 'project.json')
-      if (alreadyExists) return { error: 'Syntax error: Each project should be in its own folder!' }
+      if (alreadyExists) return { error: `A project named "${folderName}" already exists in that folder.` }
+      await fs.mkdir(projectDir, { recursive: true })
       const manifest: fileSystem.ProjectManifest = { title, files: [] }
       recordSelfWrite('project.json')
       await fileSystem.writeManifest(projectDir, manifest)
@@ -67,6 +69,8 @@ export function registerIpcHandlers(win: BrowserWindow): void {
       if (result.canceled || !result.filePaths[0]) return null
 
       const projectDir = result.filePaths[0]
+      const hasProject = await fileSystem.fileExists(projectDir, 'project.json')
+      if (!hasProject) return { error: 'No project found in that folder. Please select a VintyWrite project folder.' }
       const manifest = await fileSystem.readManifest(projectDir)
       startWatching(projectDir, win)
       return { projectDir, manifest }

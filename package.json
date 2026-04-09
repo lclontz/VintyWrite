@@ -2,7 +2,7 @@
   "name": "vintywrite",
   "productName": "VintyWrite",
   "author": "Lee Clontz",
-  "version": "1.3.0",
+  "version": "1.3.5",
   "description": "A DOS-style markdown writing app",
   "main": "./out/main/index.js",
   "scripts": {
