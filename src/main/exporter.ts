@@ -27,7 +27,7 @@ export interface ExportManifest {
 function buildExportHtml(manifest: ExportManifest, fileContents: Record<string, string>): string {
   const sections = manifest.files
     .map((file) => {
-      const md = fileContents[file.id] ?? ''
+      const md = ensureParagraphBreaks(fileContents[file.id] ?? '')
       const html = marked.parse(md) as string
       return `
         <div class="chapter">
@@ -164,42 +164,69 @@ function decodeHtmlEntities(str: string): string {
     .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(parseInt(code, 10)))
 }
 
-function inlineTokensToRuns(tokens: Token[]): TextRun[] {
+// Ensure blank lines between consecutive non-empty lines so that single-Enter
+// line breaks in the editor become proper paragraph breaks in the export.
+// Code fences and list/blockquote continuations are left untouched.
+function ensureParagraphBreaks(md: string): string {
+  const lines = md.split('\n')
+  const out: string[] = []
+  let inFence = false
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]
+    if (/^```/.test(line.trimStart())) inFence = !inFence
+    out.push(line)
+    if (
+      !inFence &&
+      line.trim() !== '' &&
+      i + 1 < lines.length &&
+      lines[i + 1].trim() !== '' &&
+      !/^([-*+>]|\d+\.)/.test(lines[i + 1].trimStart())
+    ) {
+      out.push('')
+    }
+  }
+  return out.join('\n')
+}
+
+type RunOpts = {
+  bold?: boolean
+  italics?: boolean
+  strike?: boolean
+}
+
+// Pass formatting options down through recursion rather than trying to clone
+// TextRun instances — cloning via prepForXml() returns XML-ready data, not
+// constructor options, so text content is lost.
+function inlineTokensToRuns(tokens: Token[], opts: RunOpts = {}): TextRun[] {
   return tokens.flatMap((tok): TextRun[] => {
     if (tok.type === 'text') {
-      return [new TextRun({ text: decodeHtmlEntities((tok as Tokens.Text).text) })]
+      const t = tok as Tokens.Text
+      if (t.tokens?.length) return inlineTokensToRuns(t.tokens, opts)
+      return [new TextRun({ ...opts, text: decodeHtmlEntities(t.text) })]
     }
     if (tok.type === 'strong') {
-      return inlineTokensToRuns((tok as Tokens.Strong).tokens ?? []).map(
-        (r) => new TextRun({ ...r.prepForXml?.() as object, bold: true })
-      )
+      return inlineTokensToRuns((tok as Tokens.Strong).tokens ?? [], { ...opts, bold: true })
     }
     if (tok.type === 'em') {
-      return inlineTokensToRuns((tok as Tokens.Em).tokens ?? []).map(
-        (r) => new TextRun({ ...r.prepForXml?.() as object, italics: true })
-      )
-    }
-    if (tok.type === 'codespan') {
-      return [new TextRun({ text: decodeHtmlEntities((tok as Tokens.Codespan).text), font: 'Courier New', size: 20 })]
+      return inlineTokensToRuns((tok as Tokens.Em).tokens ?? [], { ...opts, italics: true })
     }
     if (tok.type === 'del') {
-      return inlineTokensToRuns((tok as Tokens.Del).tokens ?? []).map(
-        (r) => new TextRun({ ...r.prepForXml?.() as object, strike: true })
-      )
+      return inlineTokensToRuns((tok as Tokens.Del).tokens ?? [], { ...opts, strike: true })
+    }
+    if (tok.type === 'codespan') {
+      return [new TextRun({ ...opts, text: decodeHtmlEntities((tok as Tokens.Codespan).text), font: 'Courier New', size: 20 })]
     }
     if (tok.type === 'link') {
       const link = tok as Tokens.Link
-      const text = link.tokens ? inlineTokensToRuns(link.tokens).map(r => r.prepForXml?.() as { text?: string }).map(r => r?.text ?? '').join('') : decodeHtmlEntities(link.text)
-      return [new TextRun({ text: `${text} (${link.href})`, underline: { type: UnderlineType.SINGLE }, color: '0066CC' })]
+      return [new TextRun({ ...opts, text: `${decodeHtmlEntities(link.text)} (${link.href})`, underline: { type: UnderlineType.SINGLE }, color: '0066CC' })]
     }
     if (tok.type === 'escape') {
-      return [new TextRun({ text: decodeHtmlEntities((tok as Tokens.Escape).text) })]
+      return [new TextRun({ ...opts, text: decodeHtmlEntities((tok as Tokens.Escape).text) })]
     }
     if (tok.type === 'br') {
       return [new TextRun({ break: 1 })]
     }
-    // Fallback: render raw
-    return 'raw' in tok ? [new TextRun({ text: decodeHtmlEntities((tok as { raw: string }).raw) })] : []
+    return 'raw' in tok ? [new TextRun({ ...opts, text: decodeHtmlEntities((tok as { raw: string }).raw) })] : []
   })
 }
 
@@ -315,7 +342,7 @@ export async function exportToDocx(
       })
     )
 
-    const md = fileContents[file.id] ?? ''
+    const md = ensureParagraphBreaks(fileContents[file.id] ?? '')
     const tokens = marked.lexer(md)
     allParagraphs.push(...tokensToDocxParagraphs(tokens))
     allParagraphs.push(new Paragraph({ children: [] }))
