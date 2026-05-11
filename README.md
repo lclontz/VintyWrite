@@ -18,4 +18,4 @@ Features are:
 
 Want to try it? [Get an installer from the releases page](https://github.com/lclontz/VintyWrite/releases)!
 
-Documents are called "books," each of which maps to a directory, and subsections are called "chapters," each of which maps to a Markdown file, with a manifest file inside that the application uses to keep everythiing aligned. You don't have to use it just for books -- use it however you like and let me know if you have any feedback at clontz@gmail.com!
+Documents are called "books," each of which maps to a directory, and subsections are called "chapters," each of which maps to a Markdown file, with a manifest file inside that the application uses to keep everything aligned. You don't have to use it just for books -- use it however you like and let me know if you have any feedback at clontz@gmail.com!
